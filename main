@@ -1,0 +1,304 @@
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+local Leaderboarding = Instance.new("ScreenGui")
+local LeaderBoard = Instance.new("ScrollingFrame")
+local NewFrame = Instance.new("Frame")
+local PlayerName = Instance.new("TextButton")
+local Stat1 = Instance.new("TextButton")
+
+--Properties:
+
+Leaderboarding.Name = "Leaderboarding"
+Leaderboarding.Parent = game.CoreGui
+
+LeaderBoard.Name = "LeaderBoard"
+LeaderBoard.Parent = Leaderboarding
+LeaderBoard.Active = true
+LeaderBoard.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+LeaderBoard.BackgroundTransparency = 1.000
+LeaderBoard.BorderSizePixel = 0
+LeaderBoard.Position = UDim2.new(0.393191516, 0, 0.402831435, 0)
+LeaderBoard.Size = UDim2.new(0, 250, 0, 150)
+LeaderBoard.ScrollBarThickness = 6
+
+NewFrame.Name = "NewFrame"
+NewFrame.Parent = LeaderBoard
+NewFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+NewFrame.BackgroundTransparency = 1.000
+NewFrame.Size = UDim2.new(1, -6, 0, 25)
+
+PlayerName.Name = "PlayerName"
+PlayerName.Parent = NewFrame
+PlayerName.Active = false
+PlayerName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+PlayerName.BorderSizePixel = 0
+PlayerName.Size = UDim2.new(0, 97, 0, 25)
+PlayerName.Visible = false
+PlayerName.AutoButtonColor = false
+PlayerName.Font = Enum.Font.SourceSans
+PlayerName.Text = "Username"
+PlayerName.TextColor3 = Color3.fromRGB(0, 0, 0)
+PlayerName.TextSize = 12.000
+PlayerName.TextWrapped = true
+PlayerName.BackgroundTransparency = 0.35
+
+Stat1.Name = "Stat1"
+Stat1.Parent = NewFrame
+Stat1.Active = false
+Stat1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Stat1.BorderSizePixel = 0
+Stat1.Position = UDim2.new(0, 102, 0, 0)
+Stat1.Size = UDim2.new(0, 48, 0, 25)
+Stat1.Visible = false
+Stat1.AutoButtonColor = false
+Stat1.Font = Enum.Font.SourceSans
+Stat1.Text = "Value 1"
+Stat1.TextColor3 = Color3.fromRGB(0, 0, 0)
+Stat1.TextSize = 12.000
+Stat1.TextWrapped = true
+Stat1.BackgroundTransparency = 0.35
+
+-- Scripts:
+
+local function SKYXJ_fake_script() -- LeaderBoard.LocalScript 
+	local script = Instance.new('LocalScript', LeaderBoard)
+
+	game:GetService('StarterGui'):SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+	local largest = 0
+	
+	local numbers = {
+		"K",
+		"M",
+		"B",
+		"T",
+		"Qu",
+		"Qa",
+	
+	
+		"Finished"
+	}
+	
+	local colors = {
+		green = {
+			taken = false;
+			code = Color3.fromRGB(111, 255, 103)
+		};
+	
+		blue = {
+			taken = false;
+			code = Color3.fromRGB(103, 230, 255)
+		};
+	
+		yellow = {
+			taken = false;
+			code = Color3.fromRGB(255, 246, 112)
+		};
+	
+		pink = {
+			taken = false;
+			code = Color3.fromRGB(255, 157, 200)
+		};
+	
+		orange = {
+			taken = false;
+			code = Color3.fromRGB(255, 189, 96)
+		};
+	
+		purple = {
+			taken = false;
+			code = Color3.fromRGB(197, 138, 255)
+		};
+	
+	}
+	
+	function pickcolor()
+		for i,v in pairs(colors) do
+			if v.taken == false then
+				v.taken = true
+				return v.code
+			end
+		end
+	end
+	
+	script.Parent.NewFrame.PlayerName.BackgroundColor3 = pickcolor()
+	script.Parent.NewFrame.PlayerName.Visible = true
+	if game.Players.LocalPlayer:FindFirstChild("leaderstats") then
+		local amount = 0
+		for i,v in pairs(game.Players.LocalPlayer:FindFirstChild("leaderstats"):GetChildren()) do
+		    wait(0.25)
+			if v:IsA("IntValue") or v:IsA("NumberValue") or v:IsA("StringValue") then
+				local stat = script.Parent.NewFrame.Stat1:Clone()
+				stat.Parent = script.Parent.NewFrame
+				stat.Position = UDim2.fromOffset(48*amount + 97, 0)
+				stat.Name = v.Name
+				stat.Text = stat.Name
+				stat.Visible = true
+				stat.BackgroundColor3 = pickcolor()
+				amount = amount + 1
+				script.Parent.NewFrame.Size = UDim2.fromOffset((#script.Parent.NewFrame:GetChildren()-2) * 48 + 97 - script.Parent.ScrollBarThickness, 25)
+				script.Parent.CanvasSize = UDim2.fromOffset(script.Parent.NewFrame.Size.X.Offset-6, script.Parent.CanvasSize.Y.Offset)
+			end
+		end
+		if (#script.Parent.NewFrame:GetChildren()-2) * 48 + 97 - script.Parent.ScrollBarThickness <= 250 then
+			script.Parent.Size = UDim2.fromOffset((#script.Parent.NewFrame:GetChildren()-2) * 48 + 97 - script.Parent.ScrollBarThickness, script.Parent.Size.Y.Offset)
+		else
+	        script.Parent.Size = UDim2.fromOffset(250, script.Parent.Size.Y.Offset)
+		end
+	end
+	script.Parent.Position = UDim2.new(1, -script.Parent.Size.X.Offset, 0,0)
+	
+	local uis = game:GetService("UserInputService")
+    local pressed = false
+	uis.InputBegan:Connect(function(key)
+	    if key.KeyCode == Enum.KeyCode.Tab then
+	        if pressed == false then
+	            pressed = true
+	            script.Parent:TweenPosition(UDim2.new(1, 5, 0,0))
+	        else
+	            pressed = false
+	            script.Parent:TweenPosition(UDim2.new(1, -script.Parent.Size.X.Offset, 0,0))
+	        end
+	    end
+	end)
+	                
+	
+	frames = {}
+	
+	local numbers = {
+		"K", 		-- 1,000
+		"M", 		-- 1,000,000
+		"B", 		-- 1,000,000,000
+		"T", 		-- 1,000,000,000,000
+		"Qu",		-- 1,000,000,000,000,000
+		"Qa",     	-- 1,000,000,000,000,000,000
+	
+	
+		"Finished"
+	}
+	
+	function shortenfy(number)
+		number = tonumber(number)
+		local extension = ""
+		if number >= 1000 then
+			extension = "K"
+			number = number * 0.001
+			repeat
+				if number * 0.001 >= 1 then
+					extension = numbers[table.find(numbers, extension) + 1]
+					number = number * 0.001
+				end
+			until number * 0.001 < 1 or extension == "Finished"
+			if extension == "Finished" then
+				extension = numbers[#numbers - 1]
+			end
+		end
+		return math.floor(number).. extension
+	end
+	
+	function numberfy(number)
+		local extension = tostring(number):gsub("%d","")
+		number = tostring(number):gsub("%a","")
+		number = tonumber(number)
+		local mult = table.find(numbers, extension)
+		if mult then
+			number = number * (1000^mult)
+		end
+		return number
+	end
+	
+	function sortframes()
+		pcall(function()
+			table.sort(frames, function(a,b)
+				return tostring(a.Name:lower()) > tostring(b.Name:lower())
+			end)
+			table.sort(frames, function(a,b)
+				local higha = 0
+				local highb = 0
+				for l,s in pairs(a:GetChildren()) do
+					if s:IsA("TextButton") and s.Position.X.Offset == 97 then
+						higha = numberfy(s.Text)
+						break
+					end
+				end
+	
+				for l,s in pairs(b:GetChildren()) do
+					if s:IsA("TextButton") and s.Position.X.Offset == 97 then
+						highb = numberfy(s.Text)
+						break
+					end
+				end
+	
+				return higha > highb
+			end)
+			for i,v in pairs(frames) do
+				v.Position = UDim2.fromOffset(0, 25 * i)
+				script.Parent.CanvasSize = UDim2.fromOffset(script.Parent.CanvasSize.X.Offset-6,25+25 * i)
+				
+				if 25 + 25 * i < 250 then
+					script.Parent.Size = UDim2.fromOffset(script.Parent.Size.X.Offset,25 + 25 * i)
+				else
+					script.Parent.Size = UDim2.fromOffset(script.Parent.Size.X.Offset, 250)
+				end
+			end
+		end)
+	
+	end
+	
+	
+	function addplayer(player)
+	    wait(1)
+		local newframe = script.Parent.NewFrame:Clone()
+		newframe.Parent = script.Parent
+		newframe.Name = player.Name
+		if player ~= game.Players.LocalPlayer then
+		    for i,v in pairs(newframe:GetChildren()) do
+		        if v:IsA("TextButton") then
+		            v.TextColor3 = Color3.fromRGB(50,50,50)
+		        end
+		    end
+		end
+		newframe.Visible = true
+		newframe.PlayerName.Text = player.Name
+-- 		newframe.Position = UDim2.fromOffset(0, (#script.Parent:GetChildren() - 2) * 25)
+		frames[#frames+1] = newframe
+		for i,v in pairs(player:WaitForChild("leaderstats"):GetChildren()) do
+			if newframe:FindFirstChild(v.Name) then
+				local val = newframe:FindFirstChild(v.Name)
+				val.Text = shortenfy(v.Value)
+				sortframes()
+				v.Changed:Connect(function()
+					val.Text = shortenfy(v.Value)
+					sortframes()
+				end)
+			end
+		end
+		sortframes()
+	end
+	
+	
+	function removeplayer(player)
+		local frame = script.Parent:FindFirstChild(player.Name)
+		if frame then
+			table.remove(frames, table.find(frames, frame))
+			frame:Destroy()
+			sortframes()
+		end
+	end
+	
+	for i,v in pairs(game.Players:GetPlayers()) do
+        addplayer(v)
+	end
+	
+	game.Players.PlayerAdded:Connect(function(v)
+		addplayer(v)
+	end)
+	
+	game.Players.PlayerRemoving:Connect(function(v)
+		removeplayer(v)
+	end)
+	
+end
+coroutine.wrap(SKYXJ_fake_script)()
