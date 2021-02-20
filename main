@@ -1,7 +1,31 @@
--- Gui to Lua
--- Version: 3.2
+function tablefind(table, string)
+	for i,v in pairs(table) do
+		if v == string then
+			return i
+		end
+	end
+end
 
--- Instances:
+function split(text, splitter)
+    splitter = tostring(splitter)
+	text = text..splitter
+	local returning = {}
+	local returningtxt = ""
+	local tnumber = tonumber(#splitter) - 1
+	for i = 1,#text do
+		if text:sub(i,i+tnumber) ~= splitter and splitter ~= "" then
+			returningtxt = returningtxt..text:sub(i,i)
+		else
+			if splitter == "" then
+				returning[#returning+1] = text:sub(i,i)
+				else
+				returning[#returning+1] = returningtxt
+			end
+			returningtxt = ""
+		end
+	end
+	return returning
+end
 
 local Leaderboarding = Instance.new("ScreenGui")
 local LeaderBoard = Instance.new("ScrollingFrame")
@@ -187,7 +211,7 @@ local function SKYXJ_fake_script() -- LeaderBoard.LocalScript
 			number = number * 0.001
 			repeat
 				if number * 0.001 >= 1 then
-					extension = numbers[table.find(numbers, extension) + 1]
+					extension = numbers[tablefind(numbers, extension) + 1]
 					number = number * 0.001
 				end
 			until number * 0.001 < 1 or extension == "Finished"
@@ -202,7 +226,7 @@ local function SKYXJ_fake_script() -- LeaderBoard.LocalScript
 		local extension = tostring(number):gsub("%d","")
 		number = tostring(number):gsub("%a","")
 		number = tonumber(number)
-		local mult = table.find(numbers, extension)
+		local mult = tablefind(numbers, extension)
 		if mult then
 			number = number * (1000^mult)
 		end
@@ -282,7 +306,7 @@ local function SKYXJ_fake_script() -- LeaderBoard.LocalScript
 	function removeplayer(player)
 		local frame = script.Parent:FindFirstChild(player.Name)
 		if frame then
-			table.remove(frames, table.find(frames, frame))
+			table.remove(frames, tablefind(frames, frame))
 			frame:Destroy()
 			sortframes()
 		end
